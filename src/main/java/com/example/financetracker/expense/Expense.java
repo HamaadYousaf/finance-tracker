@@ -3,11 +3,16 @@ package com.example.financetracker.expense;
 import com.example.financetracker.common.Category;
 import com.example.financetracker.user.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "expenses")
 public class Expense {
 
     @Id
