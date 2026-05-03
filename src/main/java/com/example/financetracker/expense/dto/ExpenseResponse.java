@@ -1,14 +1,18 @@
 package com.example.financetracker.expense.dto;
 
 import com.example.financetracker.common.Category;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExpenseResponse {
 
     private Long id;

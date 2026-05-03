@@ -5,6 +5,7 @@ import com.example.financetracker.subscription.dto.SubscriptionResponse;
 import com.example.financetracker.user.User;
 import com.example.financetracker.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
 
+    @CacheEvict(value = "dashboard", key = "#request.userId")
     public SubscriptionResponse addSubscription(SubscriptionRequest request) {
 
         User user = userRepository.findById(request.getUserId())
@@ -43,6 +45,7 @@ public class SubscriptionService {
                 .toList();
     }
 
+    @CacheEvict(value = "dashboard", key = "#request.userId")
     public SubscriptionResponse updateSubscription(Long id, SubscriptionRequest request) {
 
         Subscription sub = subscriptionRepository.findById(id)
@@ -58,7 +61,8 @@ public class SubscriptionService {
         return mapToResponse(subscriptionRepository.save(sub));
     }
 
-    public void deleteSubscription(Long id) {
+    @CacheEvict(value = "dashboard", key = "#userId")
+    public void deleteSubscription(Long userId, Long id) {
         subscriptionRepository.deleteById(id);
     }
 

@@ -5,6 +5,7 @@ import com.example.financetracker.expense.dto.ExpenseResponse;
 import com.example.financetracker.user.User;
 import com.example.financetracker.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,6 +19,7 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
 
+    @CacheEvict(value = "dashboard", key = "#request.userId")
     public ExpenseResponse addExpense(ExpenseRequest request) {
 
         User user = userRepository.findById(request.getUserId())
@@ -53,6 +55,7 @@ public class ExpenseService {
                 .build();
     }
 
+    @CacheEvict(value = "dashboard", key = "#userId")
     public void deleteExpense(Long userId, Long expenseId) {
         Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Expense not found"));

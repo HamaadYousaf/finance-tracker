@@ -9,6 +9,7 @@ import com.example.financetracker.subscription.SubscriptionRepository;
 import com.example.financetracker.subscription.dto.SubscriptionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public class DashboardService {
     private final SubscriptionRepository subscriptionRepository;
     private final ExpenseRepository expenseRepository;
 
+    @Cacheable(value = "dashboard", key = "#userId")
     public DashboardResponse getDashboard(Long userId) {
 
         // =========================
