@@ -6,7 +6,7 @@ function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const userId = parseInt(localStorage.getItem("userId"));
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +22,7 @@ function Dashboard() {
         };
 
         fetchData();
-    }, []);
+    }, [userId]);
 
     if (loading) {
         return <p className="text-gray-500">Loading dashboard...</p>;

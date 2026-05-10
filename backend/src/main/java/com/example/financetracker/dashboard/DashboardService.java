@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -28,49 +29,43 @@ public class DashboardService {
     public DashboardResponse getDashboard(Long userId) {
 
         // =========================
-        // 1️⃣ Monthly Subscription Cost
+        // 1️⃣ ALL Subscriptions
         // =========================
-        List<Subscription> subscriptions = subscriptionRepository.findByUserId(userId);
+        List<Subscription> subscriptions =
+                subscriptionRepository.findByUser_Id(userId);
 
         BigDecimal totalMonthlySubscriptionCost = subscriptions.stream()
                 .map(sub -> {
                     if (sub.getBillingCycle() == BillingCycle.YEARLY) {
-                        return sub.getCost().divide(BigDecimal.valueOf(12));
+                        return sub.getCost().divide(BigDecimal.valueOf(12), 2, RoundingMode.HALF_UP);
                     }
                     return sub.getCost();
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // =========================
-        // 2️⃣ Expenses This Month
+        // 2️⃣ ALL Expenses (NO MONTH FILTER)
         // =========================
-        LocalDate now = LocalDate.now();
-        LocalDate startOfMonth = now.withDayOfMonth(1);
+        List<Expense> allExpenses =
+                expenseRepository.findByUser_Id(userId);
 
-        List<Expense> expensesThisMonth =
-                expenseRepository.findByUser_IdAndDateBetween(userId, startOfMonth, now);
-
-        BigDecimal totalExpensesThisMonth = expensesThisMonth.stream()
+        BigDecimal totalExpenses = allExpenses.stream()
                 .map(Expense::getAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // =========================
-        // 3️⃣ Upcoming Renewals (next 7 days)
+        // 3️⃣ ALL Upcoming Renewals (or just ALL subscriptions if you prefer)
         // =========================
-        LocalDate nextWeek = now.plusDays(7);
-
         List<SubscriptionResponse> upcomingRenewals =
-                subscriptionRepository
-                        .findByUser_IdAndNextRenewalDateBetween(userId, now, nextWeek)
-                        .stream()
+                subscriptions.stream()
                         .map(this::mapToResponse)
                         .toList();
 
         // =========================
-        // 4️⃣ Category Breakdown (Expenses)
+        // 4️⃣ Category Breakdown (ALL expenses)
         // =========================
         Map<Category, BigDecimal> categoryBreakdown =
-                expensesThisMonth.stream()
+                allExpenses.stream()
                         .collect(Collectors.groupingBy(
                                 Expense::getCategory,
                                 Collectors.mapping(
@@ -79,9 +74,12 @@ public class DashboardService {
                                 )
                         ));
 
+        // =========================
+        // RESPONSE
+        // =========================
         return DashboardResponse.builder()
                 .totalMonthlySubscriptionCost(totalMonthlySubscriptionCost)
-                .totalExpensesThisMonth(totalExpensesThisMonth)
+                .totalExpensesThisMonth(totalExpenses)
                 .upcomingRenewals(upcomingRenewals)
                 .categoryBreakdown(categoryBreakdown)
                 .build();

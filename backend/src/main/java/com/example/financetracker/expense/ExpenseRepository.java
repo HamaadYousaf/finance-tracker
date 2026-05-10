@@ -14,4 +14,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             LocalDate start,
             LocalDate end
     );
+
+    List<Expense> findByUser_Id(Long userId);
 }

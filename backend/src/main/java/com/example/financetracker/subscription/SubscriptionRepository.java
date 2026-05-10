@@ -14,4 +14,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
             LocalDate start,
             LocalDate end
     );
+
+
+    List<Subscription> findByUser_Id(Long userId);
 }
