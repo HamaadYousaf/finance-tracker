@@ -48,7 +48,7 @@ public class DashboardService {
         LocalDate startOfMonth = now.withDayOfMonth(1);
 
         List<Expense> expensesThisMonth =
-                expenseRepository.findByUserIdAndDateBetween(userId, startOfMonth, now);
+                expenseRepository.findByUser_IdAndDateBetween(userId, startOfMonth, now);
 
         BigDecimal totalExpensesThisMonth = expensesThisMonth.stream()
                 .map(Expense::getAmount)
@@ -61,7 +61,7 @@ public class DashboardService {
 
         List<SubscriptionResponse> upcomingRenewals =
                 subscriptionRepository
-                        .findByUserIdAndNextRenewalDateBetween(userId, now, nextWeek)
+                        .findByUser_IdAndNextRenewalDateBetween(userId, now, nextWeek)
                         .stream()
                         .map(this::mapToResponse)
                         .toList();

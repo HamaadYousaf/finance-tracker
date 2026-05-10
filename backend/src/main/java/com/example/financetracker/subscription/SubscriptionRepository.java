@@ -9,7 +9,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     List<Subscription> findByUserId(Long userId);
 
-    List<Subscription> findByUserIdAndNextRenewalDateBetween(
+    List<Subscription> findByUser_IdAndNextRenewalDateBetween(
             Long userId,
             LocalDate start,
             LocalDate end
