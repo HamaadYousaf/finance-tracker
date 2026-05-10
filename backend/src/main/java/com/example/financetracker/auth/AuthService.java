@@ -26,9 +26,11 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        userRepository.save(user);
+        // save and capture the persisted user so we can return its generated id
+        User savedUser = userRepository.save(user);
 
-        return new AuthResponse(request.getEmail());
+        // return the user's id instead of the email
+        return new AuthResponse(savedUser.getId());
     }
 
         public AuthResponse login(AuthRequest request) {
@@ -40,6 +42,10 @@ public class AuthService {
                 throw new BadCredentialsException("Invalid credentials");
             }
 
-            return new AuthResponse(request.getEmail());
+            // save and capture the persisted user so we can return its generated id
+            User savedUser = userRepository.save(user);
+
+            // return the user's id instead of the email
+            return new AuthResponse(savedUser.getId());
         }
 }

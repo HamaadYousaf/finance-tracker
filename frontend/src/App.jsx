@@ -2,23 +2,27 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Register from "./pages/Register";
 
 function App() {
     return (
         <Router>
-            <div className="min-h-screen bg-gray-100">
+            <Navbar />
 
-                {/* Navigation Bar */}
-                <Navbar />
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <ProtectedRoute>
+                            <Home />
+                        </ProtectedRoute>
+                    }
+                />
 
-                <div className="p-6">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                    </Routes>
-                </div>
-
-            </div>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+            </Routes>
         </Router>
     );
 }

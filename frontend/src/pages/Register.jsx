@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-function Login() {
+function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -10,14 +10,14 @@ function Login() {
 
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
 
         setLoading(true);
         setError("");
 
         try {
-            const res = await fetch("http://localhost:8080/api/auth/login", {
+            const res = await fetch("http://localhost:8080/api/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -29,14 +29,14 @@ function Login() {
             });
 
             if (!res.ok) {
-                throw new Error("Invalid credentials");
+                throw new Error("Registration failed");
             }
 
             const data = await res.json();
 
-            // IMPORTANT: backend must return user id
-            localStorage.setItem("isLoggedIn", "true");
+            // store userId after registration
             localStorage.setItem("userId", data.id);
+            localStorage.setItem("isLoggedIn", "true");
 
             navigate("/");
         } catch (err) {
@@ -49,10 +49,10 @@ function Login() {
     return (
         <div className="flex justify-center items-center min-h-[70vh]">
             <form
-                onSubmit={handleLogin}
+                onSubmit={handleRegister}
                 className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4"
             >
-                <h2 className="text-2xl font-bold text-center">Login</h2>
+                <h2 className="text-2xl font-bold text-center">Register</h2>
 
                 <input
                     type="email"
@@ -79,15 +79,15 @@ function Login() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                    className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
                 >
-                    {loading ? "Logging in..." : "Login"}
+                    {loading ? "Creating account..." : "Register"}
                 </button>
 
                 <p className="text-sm text-center">
-                    No account?{" "}
-                    <Link to="/register" className="text-green-500">
-                        Register
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-blue-500">
+                        Login
                     </Link>
                 </p>
             </form>
@@ -95,4 +95,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default Register;

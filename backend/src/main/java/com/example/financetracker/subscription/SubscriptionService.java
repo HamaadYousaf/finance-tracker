@@ -71,7 +71,7 @@ public class SubscriptionService {
         LocalDate nextWeek = now.plusDays(7);
 
         return subscriptionRepository
-                .findByUserIdAndNextRenewalDateBetween(userId, now, nextWeek)
+                .findByUser_IdAndNextRenewalDateBetween(userId, now, nextWeek)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
